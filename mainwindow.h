@@ -26,6 +26,8 @@ public slots:
     void dadosRecebidos();
 
 private slots:
+    QString readData();
+
    void on_btn_openPort_clicked();
    void on_btn_dimmer_clicked();
 

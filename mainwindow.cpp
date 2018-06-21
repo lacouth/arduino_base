@@ -16,6 +16,7 @@ MainWindow::~MainWindow()
 
 bool MainWindow::abrirPorta(QString portName)
 {
+ //----------------NÃO ALTERAR-------------------------------------------
     serial = new QSerialPort(this);
     serial->setPortName(portName);
     serial->open(QIODevice::ReadWrite);
@@ -23,8 +24,6 @@ bool MainWindow::abrirPorta(QString portName)
     serial->setDataBits(QSerialPort::Data8);
     serial->setParity(QSerialPort::NoParity);
     serial->setStopBits(QSerialPort::OneStop);
-
-
     connect(serial, SIGNAL(readyRead()),
             this, SLOT(dadosRecebidos()));
 
@@ -33,11 +32,13 @@ bool MainWindow::abrirPorta(QString portName)
 
 void MainWindow::fecharPorta()
 {
+//----------------NÃO ALTERAR-------------------------------------------
     serial->close();
 }
 
 void MainWindow::enviarComando(QString comando)
 {
+//----------------NÃO ALTERAR-------------------------------------------
     QByteArray output = comando.toUtf8();
     serial->write(output);
 }
@@ -45,23 +46,33 @@ void MainWindow::enviarComando(QString comando)
 void MainWindow::dadosRecebidos()
 {
 
- // ----------------------Recebendo dados da Serial--------------------------
-    QByteArray m_readData;
-    m_readData += serial->readLine();
-    while (serial->waitForReadyRead(50)) // MUDAR VALOR CASO A STRING SEJA MUITO LONGA
-        m_readData += serial->readLine();
-    QString data = QString::fromUtf8(m_readData);
+//-------------- DADOS BRUTOS DA SERIAL----------------
+    QString data; //NÃO ALTERAR
+    data = readData(); // NÃO ALTERAR
 
-//----------------------MANIPULAR DADOS RECEBIDOS-----------------------------
-    QStringList dados;
+
+//-----ALTERE O CÓDIGO A PARTIR DESSE PONTO PARA A SUA APLICAÇÃO------------
+
+    QStringList valores;
     if (not data.contains("Falhou")){
-        dados = data.split(",");
-
-        ui->tempLabel->setText(dados[0] + "º C");
-        ui->umidLabel->setText(dados[1] + " % ");
-        ui->lumiLabel->setText(dados[2]);
-
+        valores = data.split(",");
+        ui->tempLabel->setText(valores[0] + "º C");
+        ui->umidLabel->setText(valores[1] + " % ");
+        ui->lumiLabel->setText(valores[2]);
     }
+}
+
+QString MainWindow::readData()
+{
+//----------------NÃO ALTERAR-------------------------------------------
+
+// ----------------------Recebendo dados da Serial--------------------------
+       QByteArray m_readData;
+       m_readData += serial->readLine();
+       while (serial->waitForReadyRead(50)) // MUDAR VALOR CASO A STRING SEJA MUITO LONGA
+           m_readData += serial->readLine();
+       QString data = QString::fromUtf8(m_readData);
+       return data;
 }
 
 void MainWindow::on_btn_openPort_clicked()
